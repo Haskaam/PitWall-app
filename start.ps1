@@ -1,7 +1,7 @@
 
 $root = $PSScriptRoot
 
-$backend = Join-Path $root "backend"
+$backend = Join-Path $root "backend\pitwall-api"
 $connector = Join-Path $root "connector"
 
 # Wczytaj lokalny token
