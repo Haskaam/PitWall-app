@@ -1,0 +1,27 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+connector.env
+
+# Laravel
+/backend/vendor/
+/backend/node_modules/
+/backend/storage/*.key
+
+# .NET
+**/bin/
+**/obj/
+
+# React
+/frontend/node_modules/
+/frontend/dist/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
