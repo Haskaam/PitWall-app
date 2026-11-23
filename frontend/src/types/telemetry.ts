@@ -9,11 +9,19 @@ export type TelemetrySnapshot = {
     };
 
     session: {
+        sessionNum: number;
         sessionTimeRemainSeconds: number;
         sessionTimeTotalSeconds: number;
         airTemperatureC: number;
         trackTemperatureC: number;
     };
+
+    sessionInfo: {
+        sessions: {
+            sessionNum: number;
+            sessionName: string;
+        }[];
+    } | null;
 
     drivers: Driver[];
 };
