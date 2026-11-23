@@ -19,7 +19,7 @@ function DashboardLayout({snapshot}: DashboardLayoutProps) {
     const [activeTab, setActiveTab] = useState<DashboardTab>("timing");
 
     return (
-        <div>
+        <div className="dashboard">
             <DashboardHeader 
                 sessionType={currentSession?.sessionName ?? null}
                 timeRemaining={snapshot?.session.sessionTimeRemainSeconds ?? null}
@@ -27,12 +27,12 @@ function DashboardLayout({snapshot}: DashboardLayoutProps) {
                 trackTemp={snapshot?.session.trackTemperatureC ?? null}
                 
             />
-
+        <main className="dashboard-main">
             <DashboardTabs 
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
             />
-
+        <section className="dashboard-panel">
             {activeTab === "timing" && (
                 <LiveTiming drivers={snapshot?.drivers ?? []} />
             )}
@@ -49,6 +49,8 @@ function DashboardLayout({snapshot}: DashboardLayoutProps) {
                     <p>Coming soon...</p>
                 </div>
             )}
+            </section>
+            </main>
         </div>
     )
 }

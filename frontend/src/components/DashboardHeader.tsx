@@ -20,13 +20,31 @@ function formatTime(timeRemaining: number | null): string {
 function DashboardHeader({airTemp, trackTemp, sessionType, timeRemaining}: DashboardHeaderProps) {
     return (
         <header className="dashboard-header">
-            <h1>Pit Wall</h1>
+            <div className="header-brand">
+                <h1>Pit Wall</h1>
+            </div>
 
-            <p>Session Type: {sessionType ?? "-"}</p>
-            <p>Time Remaining: {formatTime(timeRemaining)}</p>
-            <p>AirTemp: {airTemp?.toFixed(1) ?? "-"} °C</p>
-            <p>TrackTemp: {trackTemp?.toFixed(1) ?? "-"} °C</p>
+            <div className="header-stats">
+                <div className="header-stat">
+                    <span className="stat-label">Session Type:</span>
+                    <strong className="stat-value">{sessionType ?? " -"}</strong>
+                </div>
 
+                <div className="header-stat">
+                    <span className="stat-label">Time remaining:</span>
+                    <strong className="stat-value">{formatTime(timeRemaining) ?? " -"}</strong>
+                </div>
+
+                <div className="header-stat">
+                    <span className="stat-label">AirTemp:</span>
+                    <strong className="stat-value">{airTemp?.toFixed(1) ?? " -"}</strong>
+                </div>
+
+                <div className="header-stat">
+                    <span className="stat-label">TrackTemp:</span>
+                    <strong className="stat-value">{trackTemp?.toFixed(1) ?? " -"}</strong>
+                </div>
+            </div>
         </header>
     );
 }

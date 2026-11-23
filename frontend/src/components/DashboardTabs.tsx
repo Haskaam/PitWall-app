@@ -7,25 +7,25 @@ type DashboardTabsProps = {
 
 function DashboardTabs({activeTab, onTabChange}: DashboardTabsProps) {
     return (
-        <div>
+        <nav className="dashboard-tabs">
             <button
-            className={activeTab === "timing" ? "active" : ""}
+            className={activeTab === "timing" ? "tab active" : "tab"}
             onClick={() => onTabChange("timing")}>
                 Live Timing
             </button>
 
             <button
-            className={activeTab === "fuel" ? "active" : ""}
+            className={activeTab === "fuel" ? "tab active" : "tab"}
             onClick={() => onTabChange("fuel")}>
                 Fuel Calculator
             </button>
 
             <button
-            className={activeTab === "fight" ? "active" : ""}
+            className={activeTab === "fight" ? "tab active" : "tab"}
             onClick={() => onTabChange("fight")}>
                 Fight Simulation
             </button>
-        </div>
+        </nav>
     )
 }
 
