@@ -4,11 +4,11 @@ $root = $PSScriptRoot
 $backend = Join-Path $root "backend\pitwall-api"
 $connector = Join-Path $root "connector"
 
-# Wczytaj lokalny token
-$configPath = Join-Path $root "connector.env"
+
+$configPath = Join-Path $root ".env"
 
 if (-not (Test-Path $configPath)) {
-    throw "Brak pliku connector.env"
+    throw "Brak pliku .env"
 }
 
 Get-Content $configPath | ForEach-Object {

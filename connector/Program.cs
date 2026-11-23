@@ -103,7 +103,10 @@ public class Program
                                         DriverName = Convert.ToString(driver.UserName) ?? "",
                                         CarModel = Convert.ToString(driver.CarScreenName) ?? "",
                                         TeamName = Convert.ToString(driver.TeamName) ?? "",
-                                        ClassRelativeSpeed = ReadClassRelativeSpeed(parsed, carIdx)
+                                        ClassRelativeSpeed = ReadClassRelativeSpeed(parsed, carIdx),
+                                        ClassName = Convert.ToString(driver.CarClassShortName),
+                                        ClassColor = Convert.ToString(driver.CarClassColor),
+                                        IsPaceCar = driver.CarIsPaceCar != 0
                                     };
                                 }
                             }
@@ -475,6 +478,9 @@ public class Program
         TeamName = source.TeamName,
         ClassId = source.ClassId,
         ClassRelativeSpeed = source.ClassRelativeSpeed,
+        ClassName = source.ClassName,
+        ClassColor = source.ClassColor,
+        IsPaceCar = source.IsPaceCar,
         Position = source.Position,
         ClassPosition = source.ClassPosition,
         Lap = source.Lap,

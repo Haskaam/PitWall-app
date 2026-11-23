@@ -75,6 +75,22 @@
 .live-timing tbody tr:hover {
   background-color: #1e293b;
 }
+
+.live-timing .class-header {
+  background-color: #202c3d;
+  color: #e5e7eb;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 12px;
+  border-left: 4px solid #00cfff;
+}
+
+.live-timing tbody tr:not(.class-header):hover {
+  background-color: #1e293b;
+}
+
+
 @media (max-width: 768px) {
   .dashboard-content {
     grid-template-columns: 1fr;

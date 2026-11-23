@@ -11,39 +11,63 @@ public sealed class LiveOrderTracker
     public void Reset() => _previous.Clear();
 
     public void Update(List<DriverTelemetry> drivers)
-    {
-        var active = drivers.Where(d => d.ClassId is >= 0 && d.Position > 0).ToList();
-        var sorted = active.OrderByDescending(d => Progress(d).HasValue)
-            .ThenByDescending(d => Progress(d) ?? double.NegativeInfinity)
-            .ThenBy(d => d.Position).ToList();
+{
+    var active = drivers
+        .Where(d => d.ClassId is >= 0 && d.Position > 0)
+        .ToList();
 
-        // If the difference is extremely small, preserve SDK order as a stable tie breaker.
+    bool hasMissingProgress = active.Any(d => !Progress(d).HasValue);
+
+    List<DriverTelemetry> sorted;
+
+    if (hasMissingProgress)
+    {
+        // Fallback: use official SDK classification.
+        sorted = active
+            .OrderBy(d => d.Position)
+            .ToList();
+    }
+    else
+    {
+        // Physical race order based on track progress.
+        sorted = active
+            .OrderByDescending(d => Progress(d)!.Value)
+            .ThenBy(d => d.Position)
+            .ToList();
+
         sorted.Sort((a, b) =>
         {
-            double? pa = Progress(a), pb = Progress(b);
-            if (pa.HasValue && pb.HasValue)
-            {
-                double difference = pb.Value - pa.Value;
-                if (Math.Abs(difference) > NearTie) return difference > 0 ? 1 : -1;
-            }
-            else if (pa.HasValue != pb.HasValue) return pa.HasValue ? -1 : 1;
+            double pa = Progress(a)!.Value;
+            double pb = Progress(b)!.Value;
+
+            double difference = pb - pa;
+
+            if (Math.Abs(difference) > NearTie)
+                return difference > 0 ? 1 : -1;
+
             return a.Position.CompareTo(b.Position);
         });
-
-        int overall = 1;
-        foreach (var car in sorted) car.LivePosition = overall++;
-        foreach (var group in active.GroupBy(x => x.ClassId))
-        {
-            int classPos = 1;
-            foreach (var car in sorted.Where(x => x.ClassId == group.Key))
-                car.LiveClassPosition = classPos++;
-        }
-        foreach (var car in drivers.Except(active))
-        {
-            car.LivePosition = car.Position > 0 ? car.Position : 0;
-            car.LiveClassPosition = car.ClassPosition > 0 ? car.ClassPosition : 0;
-        }
     }
+
+    int overall = 1;
+
+    foreach (var car in sorted)
+        car.LivePosition = overall++;
+
+    foreach (var group in active.GroupBy(x => x.ClassId))
+    {
+        int classPos = 1;
+
+        foreach (var car in sorted.Where(x => x.ClassId == group.Key))
+            car.LiveClassPosition = classPos++;
+    }
+
+    foreach (var car in drivers.Except(active))
+    {
+        car.LivePosition = car.Position > 0 ? car.Position : 0;
+        car.LiveClassPosition = car.ClassPosition > 0 ? car.ClassPosition : 0;
+    }
+}
 
     public static double? Progress(DriverTelemetry car)
     {

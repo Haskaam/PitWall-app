@@ -10,6 +10,9 @@ public sealed class DriverTelemetry
 
     public int? ClassId { get; set; }
     public int ClassRelativeSpeed { get; set; }
+    public string? ClassName { get; set;}
+    public string? ClassColor { get; set;}
+    public bool IsPaceCar { get; set; }
     public int Position { get; set; }
     public int ClassPosition { get; set; }
     // Official standings are kept intact; live positions update on overtakes.

@@ -24,12 +24,17 @@ export type Driver = {
     driverName: string;
     carModel: string;
     classId: number;
+    className: string | null;
+    classColor: string | null;
+    isPaceCar: boolean;
+    classRelativeSpeed: number;
     livePosition: number;
     liveClassPosition: number;
     gapSeconds: number | null;
     intervalSeconds: number | null;
     lastLapTime: number;
     bestLapTime: number;
+    qualifyingBestLapTime: number | null;
     onPitRoad: boolean;
 };
 
