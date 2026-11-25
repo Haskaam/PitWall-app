@@ -26,6 +26,11 @@ export type TelemetrySnapshot = {
     drivers: Driver[];
 };
 
+export type PitStop = {
+    pitRoadDurationSeconds: number | null;
+    isInProgress: boolean;
+}
+
 export type Driver = {
     carIdx: number;
     carNumber: string;
@@ -44,6 +49,9 @@ export type Driver = {
     bestLapTime: number;
     qualifyingBestLapTime: number | null;
     onPitRoad: boolean;
+    currentPitRoadSeconds: number | null;
+    hasBlackFlag: boolean;
+    lastPitStop: PitStop | null;
 };
 
 export type TelemetryResponse = {

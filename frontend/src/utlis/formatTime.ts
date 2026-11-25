@@ -1,4 +1,4 @@
-export function formatLapTime(seconds: number | null): string {
+export function formatTime(seconds: number | null): string {
     if(seconds === null || seconds <= 0 || !Number.isFinite(seconds)) {
         return "-";
     }

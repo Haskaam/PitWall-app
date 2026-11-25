@@ -144,6 +144,39 @@
   background-color: #1e293b;
 }
 
+.pit-timer {
+  display: inline-block;
+  min-width: 65px;
+  padding: 3px 6px;
+  border: 1px solid #168bff;
+  border-radius: 2px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pit-timer.active {
+  animation: pit-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pit-pulse {
+  0%, 100% {
+    background-color: rgba(0, 145, 255, 0.08);
+  }
+
+  50% {
+    background-color: rgba(0, 145, 255, 0.30);
+  }
+}
+.lap-purple {
+  color: #b76aff;
+  font-weight: 700;
+}
+
+.lap-green {
+  color: #35c878;
+  font-weight: 700;
+}
+
 
 @media (max-width: 768px) {
   .dashboard-content {
