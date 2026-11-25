@@ -46,7 +46,7 @@ function LiveTiming({drivers}: LiveTimingProps) {
     return null;
 }
 
-    return (
+    return (    
         <div className="live-timing">
             <table>
                 <thead>

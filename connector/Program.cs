@@ -198,13 +198,17 @@ public class Program
                     int sessionNumber = ReadInt(client.GetValue("SessionNum")) ?? -1;
                     int sessionState = ReadInt(client.GetValue("SessionState")) ?? 0;
                     if (sessionNumber != lastSessionNumber)
-                    {
-                        lastSessionNumber = sessionNumber;
-                        lock (driversLock)
-                            currentSessionType = GetSessionType(sessionInfo, sessionNumber);
-                        liveOrderTracker.Reset();
-                        relativeTracker.Reset();
-                    }
+{
+    lastSessionNumber = sessionNumber;
+
+    liveOrderTracker.Reset();
+    relativeTracker.Reset();
+}
+
+lock (driversLock)
+{
+    currentSessionType = GetSessionType(sessionInfo, sessionNumber);
+}
                     bool isRace = currentSessionType.Contains("Race", StringComparison.OrdinalIgnoreCase);
                     // On the race grid, show qualifying results until actual racing begins.
                     bool showQualifyingGrid = isRace && sessionState != 4 && sessionState != 6 &&
