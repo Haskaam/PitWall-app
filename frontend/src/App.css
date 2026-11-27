@@ -177,6 +177,30 @@
   font-weight: 700;
 }
 
+.class-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.class-filters button {
+  padding: 6px 14px;
+  border: 1px solid #344;
+  border-radius: 4px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+.class-filters button.selected {
+  border-color: #168bff;
+  background: rgba(0, 145, 255, 0.2);
+}
+
+.sorting-header {
+  cursor: pointer;
+}
+
 
 @media (max-width: 768px) {
   .dashboard-content {

@@ -5,19 +5,23 @@ import { formatTime } from "../utlis/formatTime";
 type LiveTimingProps = {
     drivers: Driver[];
 };
-
 type LapColor = "lap-purple" | "lap-green" | "";
-
+type SortKey = "pos" | "last" | "best";
+type SortDirection = "asc" | "desc";
 type LapHistory = {
     lastLapTime: number;
     bestLapTime: number;
     color: LapColor;
 }
+type ClassFilter = "ALL" | "GTP" | "LMP2" | "GT3";
 
 function LiveTiming({drivers}: LiveTimingProps) {
     const lapHistory = useRef<Record<number, LapHistory>>({});
     const [lapColor, setLapColor] = useState<Record<number, LapColor>>({});
     const raceDrivers = drivers.filter(driver => !driver.isPaceCar && driver.classId !== null && driver.classId >= 0);
+    const [sortKey, setSortKey] = useState<SortKey>("pos");
+    const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+    const [classFilter, setClassFilter] = useState<ClassFilter>("ALL");
 
     const groupedDrivers = Object.values(
         raceDrivers.reduce<Record<string, Driver[]>>((groups, driver) => {
@@ -39,12 +43,45 @@ function LiveTiming({drivers}: LiveTimingProps) {
 
     groupedDrivers.forEach(group => {
         group.sort((a, b) => {
-            const posA = a.liveClassPosition > 0 ? a.liveClassPosition : Infinity;
-            const posB = b.liveClassPosition > 0 ? b.liveClassPosition : Infinity;
+            const getValue = (driver: Driver) => {
+                switch (sortKey) {
+                    case "pos":
+                        return driver.liveClassPosition > 0
+                        ? driver.liveClassPosition
+                        : null;
 
-            return posA - posB;
+                    case "last": 
+                    return driver.lastLapTime > 0
+                    ? driver.lastLapTime
+                    : null;
+
+                    case "best":
+                        return driver.bestLapTime > 0
+                        ? driver.bestLapTime
+                        : null;
+                }
+            };
+
+            const valueA = getValue(a);
+            const valueB = getValue(b);
+
+            if (valueA === null) return valueB === null ? 0 : 1;
+            if (valueB === null) return -1;
+
+            return sortDirection === "asc"
+                ? valueA - valueB
+                : valueB - valueA;
         });
     });
+
+    function handleSort(key: SortKey) {
+        if (sortKey === key) {
+            setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+        } else {
+            setSortKey(key);
+            setSortDirection("asc");
+        }
+    }
 
     function getClassName(carModel: string): string | null {
     const model = carModel.toUpperCase();
@@ -131,22 +168,51 @@ useEffect(() => {
 
     return (    
         <div className="live-timing">
+            <div className="class-filters">
+                {(["ALL", "GTP", "LMP2", "GT3"] as const).map(carClass => (
+                    <button
+                    key={carClass}
+                    className={classFilter === carClass ? "selected" : ""}
+                    onClick={() => setClassFilter(carClass)}
+                    >
+                        {carClass}
+                    </button>
+                ))}
+            </div>
             <table>
                 <thead>
                     <tr>
-                        <th>POS</th>
+                        <th className="sorting-header" onClick={() => handleSort("pos")}>
+                            POS {sortKey === "pos" ? (sortDirection === "asc" ? "▲" : "▼") : ""}
+                        </th>
                         <th>CAR</th>
                         <th>DRIVER</th>
                         <th>GAP</th>
                         <th>INTERVAL</th>
-                        <th>LAST</th>
-                        <th>BEST</th>
+                        <th className="sorting-header" onClick={() => handleSort("last")}>
+                            LAST {sortKey === "last" ? (sortDirection === "asc" ? "▲" : "▼") : ""}
+                        </th>
+                        <th className="sorting-header" onClick={() => handleSort("best")}>
+                            BEST {sortKey === "best" ? (sortDirection === "asc" ? "▲" : "▼") : ""}
+                        </th>
                         <th>PIT</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {groupedDrivers.map((group, index) => {
+                    {groupedDrivers
+                    .filter(group => {
+                        if (classFilter === "ALL") return true;
+
+                            const className =
+                             group[0].className?.toUpperCase();
+
+                        const detectedClass =
+                            group.map(driver => getClassName(driver.carModel)).find(Boolean);
+
+                        return className === classFilter || detectedClass === classFilter;
+                        })                  
+                    .map((group, index) => {
                         const classBestLap = Math.min(
                             ...group.map(driver => driver.bestLapTime).filter(time => time > 0)
                         );
@@ -158,13 +224,8 @@ useEffect(() => {
                                 </td>
                             </tr>
 
-                            {group.map(driver => {
-                                const isValidLap = driver.lastLapTime > 0;
-                                const isClassBest = isValidLap && driver.lastLapTime === classBestLap;
-                                const isPersonalBest = isValidLap && driver.lastLapTime === driver.bestLapTime;
-                                const lastLapClass = isClassBest ? "lap-purple" : isPersonalBest ? "lap-green" : "";
-
-                                return (
+                            {group.map(driver => (
+        
                                 <tr key={driver.carIdx}>
                                     <td>{driver.liveClassPosition > 0 ? driver.liveClassPosition : "-"}</td>
                                     <td>{driver.carNumber}</td>
@@ -198,8 +259,7 @@ useEffect(() => {
                                         }
                                     </td>
                                 </tr>
-                                );
-                            })}
+                            ))}
                         </Fragment>
                         );
                     })}
